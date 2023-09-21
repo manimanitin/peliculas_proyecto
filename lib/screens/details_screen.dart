@@ -8,16 +8,16 @@ class DetailsScreen extends StatelessWidget {
     //recibir argumentos de otra pantalla
     final String movie =
         ModalRoute.of(context)?.settings.arguments.toString() ?? 'Sin nombre';
-    return const Scaffold(
+    return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _CustomAppBar(),
+          const _CustomAppBar(),
           SliverList(
               delegate: SliverChildListDelegate.fixed(
             [
-              _PosterAndTitle(),
-              _PosterAndTitle(),
-              _PosterAndTitle(),
+              const _PosterAndTitle(),
+              const _OverView(),
+              const _ActorsSlider(),
             ],
           )),
         ],
@@ -118,6 +118,98 @@ class _PosterAndTitle extends StatelessWidget {
           ))
         ],
       ),
+    );
+  }
+}
+
+class _OverView extends StatelessWidget {
+  const _OverView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 10,
+      ),
+      child: const Text(
+        'Consectetur anim laborum aute duis cillum adipisicing sit proident adipisicing. Occaecat occaecat occaecat minim fugiat id cupidatat. Lorem et dolor consectetur deserunt exercitation.',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 15),
+      ),
+    );
+  }
+}
+
+class _ActorsSlider extends StatelessWidget {
+  const _ActorsSlider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Container(
+      width: double.infinity,
+      height: size.height * .3,
+      color: Colors.red,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Actores',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+              child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 20,
+            itemBuilder: (_, int index) => const _Actors(),
+          ))
+        ],
+      ),
+    );
+  }
+}
+
+class _Actors extends StatelessWidget {
+  const _Actors();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 130,
+      height: 210,
+      color: Colors.red,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: Column(children: [
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, 'details', arguments: ''),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: const FadeInImage(
+              placeholder: AssetImage('assets/no-image.jpg'),
+              image: AssetImage('assets/no-image.jpg'),
+              width: 130,
+              height: 145,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        const Text(
+          'Id ut ullamco non quis aliqua nulla duis.',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        ),
+      ]),
     );
   }
 }
