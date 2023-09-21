@@ -30,7 +30,7 @@ class MovieSlider extends StatelessWidget {
               child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: 20,
-            itemBuilder: (_, int index) => _MoviePoster(),
+            itemBuilder: (_, int index) => const _MoviePoster(),
           ))
         ],
       ),
@@ -39,14 +39,14 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
-  const _MoviePoster({super.key});
+  const _MoviePoster();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 130,
       height: 210,
-      color: Colors.green,
+      color: Colors.red,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Column(children: [
         GestureDetector(
