@@ -8,16 +8,16 @@ class DetailsScreen extends StatelessWidget {
     //recibir argumentos de otra pantalla
     final String movie =
         ModalRoute.of(context)?.settings.arguments.toString() ?? 'Sin nombre';
-    return Scaffold(
+    return const Scaffold(
       body: CustomScrollView(
         slivers: [
-          const _CustomAppBar(),
+          _CustomAppBar(),
           SliverList(
               delegate: SliverChildListDelegate.fixed(
             [
-              const _PosterAndTitle(),
-              const _OverView(),
-              const _ActorsSlider(),
+              _PosterAndTitle(),
+              _OverView(),
+              _ActorsSlider(),
             ],
           )),
         ],
