@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(const MovieSlider());
+import 'package:peliculas_proyecto/models/movie.dart';
 
 class MovieSlider extends StatelessWidget {
-  const MovieSlider({super.key});
+  final List<Movie> movies;
+  final String? title;
+  const MovieSlider({super.key, required this.movies, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +30,8 @@ class MovieSlider extends StatelessWidget {
           Expanded(
               child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (_, int index) => const _MoviePoster(),
+            itemCount: movies.length,
+            itemBuilder: (_, int index) => _MoviePoster(movie: movies[index]),
           ))
         ],
       ),
@@ -39,7 +40,8 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
-  const _MoviePoster();
+  final Movie movie;
+  const _MoviePoster({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +55,9 @@ class _MoviePoster extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, 'details', arguments: ''),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: const FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'),
-              image: AssetImage('assets/no-image.jpg'),
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/no-image.jpg'),
+              image: NetworkImage(movie.fullPosterImg),
               width: 130,
               height: 145,
             ),
@@ -64,8 +66,8 @@ class _MoviePoster extends StatelessWidget {
         const SizedBox(
           height: 5,
         ),
-        const Text(
-          'Id ut ullamco non quis aliqua nulla duis.',
+        Text(
+          movie.title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
