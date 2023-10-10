@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peliculas_proyecto/models/movie.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
@@ -6,18 +7,23 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //recibir argumentos de otra pantalla
-    final String movie =
-        ModalRoute.of(context)?.settings.arguments.toString() ?? 'Sin nombre';
-    return const Scaffold(
+    final Movie movie = ModalRoute.of(context)?.settings.arguments as Movie;
+    return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _CustomAppBar(),
+          _CustomAppBar(movie),
           SliverList(
               delegate: SliverChildListDelegate.fixed(
             [
-              _PosterAndTitle(),
-              _OverView(),
-              _ActorsSlider(),
+              _PosterAndTitle(
+                movie: movie,
+              ),
+              _OverView(
+                movie: movie,
+              ),
+              _ActorsSlider(
+                movie: movie,
+              ),
             ],
           )),
         ],
@@ -27,7 +33,8 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget {
-  const _CustomAppBar();
+  const _CustomAppBar(this.movie);
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -42,16 +49,16 @@ class _CustomAppBar extends StatelessWidget {
           width: double.infinity,
           alignment: Alignment.bottomCenter,
           color: Colors.black12,
-          child: const Text(
-            'movie.title}',
-            style: TextStyle(fontSize: 18),
+          child: Text(
+            movie.title,
+            style: const TextStyle(fontSize: 18),
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
         ),
-        background: const FadeInImage(
-          placeholder: AssetImage('assets/loading.gif'),
-          image: AssetImage('assets/no-image.jpg'),
+        background: FadeInImage(
+          placeholder: const AssetImage('assets/loading.gif'),
+          image: NetworkImage(movie.backDropImg),
         ),
       ),
     );
@@ -59,8 +66,8 @@ class _CustomAppBar extends StatelessWidget {
 }
 
 class _PosterAndTitle extends StatelessWidget {
-  const _PosterAndTitle({super.key});
-
+  const _PosterAndTitle({super.key, required this.movie});
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -70,45 +77,45 @@ class _PosterAndTitle extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: const FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'),
-              image: AssetImage('assets/no-image.jpg'),
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/no-image.jpg'),
+              image: NetworkImage(movie.fullPosterImg),
               height: 250,
             ),
           ),
           const SizedBox(
             width: 20,
           ),
-          const Expanded(
+          Expanded(
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'movie.title}',
-                style: TextStyle(fontSize: 30),
+                movie.title,
+                style: const TextStyle(fontSize: 30),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
               Text(
-                'movie.titleOriginal',
-                style: TextStyle(fontSize: 18),
+                movie.originalTitle,
+                style: const TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.star_outlined,
                     size: 20,
                     color: Colors.blueAccent,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Text(
-                    'movie.voteAverage',
-                    style: TextStyle(fontSize: 12),
+                    movie.voteAverage.toString(),
+                    style: const TextStyle(fontSize: 12),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   )
@@ -123,8 +130,8 @@ class _PosterAndTitle extends StatelessWidget {
 }
 
 class _OverView extends StatelessWidget {
-  const _OverView({super.key});
-
+  const _OverView({super.key, required this.movie});
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -132,18 +139,18 @@ class _OverView extends StatelessWidget {
         horizontal: 20,
         vertical: 10,
       ),
-      child: const Text(
-        'Consectetur anim laborum aute duis cillum adipisicing sit proident adipisicing. Occaecat occaecat occaecat minim fugiat id cupidatat. Lorem et dolor consectetur deserunt exercitation.',
+      child: Text(
+        movie.overview,
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 15),
+        style: const TextStyle(fontSize: 15),
       ),
     );
   }
 }
 
 class _ActorsSlider extends StatelessWidget {
-  const _ActorsSlider({super.key});
-
+  const _ActorsSlider({super.key, required this.movie});
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -169,7 +176,7 @@ class _ActorsSlider extends StatelessWidget {
               child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: 20,
-            itemBuilder: (_, int index) => const _Actors(),
+            itemBuilder: (_, int index) => _Actors(movie),
           ))
         ],
       ),
@@ -178,8 +185,10 @@ class _ActorsSlider extends StatelessWidget {
 }
 
 class _Actors extends StatelessWidget {
-  const _Actors();
-
+  const _Actors(
+    this.movie,
+  );
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return Container(
