@@ -48,4 +48,13 @@ class MoviesProvider extends ChangeNotifier {
     popularMovies = [...popularMovies, ...popularResponse.results];
     notifyListeners();
   }
+
+  getMoviesCast(int movieId) async {
+    var url = Uri.https(_baseUrl, '3/movie/credits/$movieId', {
+      'api_key': _apiKey,
+      'language': _language,
+      'page': '1',
+    });
+    final response = await http.get(url);
+  }
 }

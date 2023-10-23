@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:peliculas_proyecto/models/credits_response.dart';
 import 'package:peliculas_proyecto/models/movie.dart';
+import 'package:peliculas_proyecto/providers/movies_provider.dart';
+import 'package:provider/provider.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
@@ -22,7 +26,7 @@ class DetailsScreen extends StatelessWidget {
                 movie: movie,
               ),
               _ActorsSlider(
-                movie: movie,
+                movieId: movie.id,
               ),
             ],
           )),
@@ -149,12 +153,41 @@ class _OverView extends StatelessWidget {
 }
 
 class _ActorsSlider extends StatelessWidget {
-  const _ActorsSlider({super.key, required this.movie});
-  final Movie movie;
+  const _ActorsSlider({required this.movieId});
+  final int movieId;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
+    return FutureBuilder(
+        future: moviesProvider.getMoviesCast(movieId),
+        builder: (_, AsyncSnapshot<List<Cast>> snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              constraints: const BoxConstraints(maxWidth: 150),
+              height: 180,
+              child: const CupertinoActivityIndicator(),
+            );
+          } else {
+            final List<Cast> castList = snapshot.data!;
+            return Container(
+              margin: const EdgeInsets.only(bottom: 30),
+              width: double.infinity,
+              height: 180,
+              child: ListView.builder(
+                itemCount: 10,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  Text(castList[index].name.toString());
+                  return null;
+                },
+              ),
+            );
+          }
+        });
+  }
+  /*
     return Container(
       width: double.infinity,
       height: size.height * .3,
@@ -182,43 +215,46 @@ class _ActorsSlider extends StatelessWidget {
       ),
     );
   }
+  */
 }
 
 class _Actors extends StatelessWidget {
+  final Cast actor;
   const _Actors(
-    this.movie,
+    this.actor,
   );
-  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 130,
-      height: 210,
+      width: 110,
+      height: 100,
       color: Colors.red,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: Column(children: [
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, 'details', arguments: ''),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: const FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'),
-              image: AssetImage('assets/no-image.jpg'),
-              width: 130,
-              height: 145,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {},
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                placeholder: const AssetImage('assets/no-image.jpg'),
+                image: NetworkImage(actor.fullProfilePath),
+                width: 100,
+                height: 140,
+              ),
             ),
           ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const Text(
-          'Id ut ullamco non quis aliqua nulla duis.',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-        ),
-      ]),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            actor.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
